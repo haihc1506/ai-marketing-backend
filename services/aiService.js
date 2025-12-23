@@ -6,26 +6,16 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // Cấu hình Model với JSON Schema (Kỹ thuật 3B: Structured Output)
 // Việc định nghĩa Schema giúp đảm bảo AI LUÔN trả về đúng định dạng
-const model = genAI.getGenerativeModel({
-  model: "gemini-2.5-flash-lite", // <-- Model mới từ danh sách của bạn
-  generationConfig: {
-    responseMimeType: "application/json",
-    responseSchema: {
-      type: SchemaType.OBJECT,
-      properties: {
-        hook_sentence: { type: SchemaType.STRING },
-        body_script: { type: SchemaType.STRING },
-        cta: { type: SchemaType.STRING },
-        caption_hashtags: {
-          type: SchemaType.ARRAY,
-          items: { type: SchemaType.STRING },
-        },
-        tone_analysis: { type: SchemaType.STRING },
-      },
-      required: ["hook_sentence", "body_script", "cta", "caption_hashtags"],
+const jsonSchema = {
+    type: SchemaType.OBJECT,
+    properties: {
+      hook_sentence: { type: SchemaType.STRING },
+      body_script: { type: SchemaType.STRING },
+      cta: { type: SchemaType.STRING },
+      caption_hashtags: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } },
     },
-  },
-});
+    required: ["hook_sentence", "body_script", "cta", "caption_hashtags"],
+};
 
 /**
  * Hàm tạo Script bán hàng (Kỹ thuật 1: Biến Prompt thành Function)
@@ -42,9 +32,21 @@ async function generateScript(
   targetAudience,
   usp,
   tone,
-  videoData
+  videoData,
+  modelName
 ) {
   try {
+    const selectedModel = modelName || "gemini-2.5-flash";
+
+    console.log(`🤖 Đang sử dụng model: ${selectedModelName}`);
+
+    const model = genAI.getGenerativeModel({
+      model: selectedModelName,
+      generationConfig: {
+        responseMimeType: "application/json",
+        responseSchema: jsonSchema,
+      },
+    });
     // Kỹ thuật 3A: System Instruction (Được lồng ghép vào prompt hoặc cấu hình model)
     const prompt = `
       Bạn là chuyên gia Marketing và Copywriting với nhiều năm kinh nghiệm tạo nội dung bán hàng trên nền tảng mạng xã hội.
