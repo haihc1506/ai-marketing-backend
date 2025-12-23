@@ -7,7 +7,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 // Cấu hình Model với JSON Schema (Kỹ thuật 3B: Structured Output)
 // Việc định nghĩa Schema giúp đảm bảo AI LUÔN trả về đúng định dạng
 const model = genAI.getGenerativeModel({
-  model: "gemini-2.5-flash", // <-- Model mới từ danh sách của bạn
+  model: "gemini-3-flash", // <-- Model mới từ danh sách của bạn
   generationConfig: {
     responseMimeType: "application/json",
     responseSchema: {
