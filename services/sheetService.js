@@ -8,21 +8,31 @@ const saveToGoogleSheet = async (data) => {
     // 1. Cấu hình xác thực
     const serviceAccountAuth = new JWT({
       email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-      key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'), // Xử lý lỗi xuống dòng
+      key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
       scopes: ['https://www.googleapis.com/auth/spreadsheets'],
     });
 
     const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEET_ID, serviceAccountAuth);
 
-    // 2. Tải thông tin Sheet
+    // 2. Tải thông tin chung của File
     await doc.loadInfo();
 
     // 3. Lấy trang đầu tiên (Sheet1)
     const sheet = doc.sheetsByIndex[0];
 
+    // --- ĐOẠN SỬA LỖI (QUAN TRỌNG) ---
+    // Cố gắng tải dòng tiêu đề về trước
+    try {
+        await sheet.loadHeaderRow(); 
+    } catch (e) {
+        // Nếu sheet mới tinh chưa có dữ liệu, hàm này có thể lỗi nhẹ
+        // Ta lờ đi để code chạy tiếp xuống phần tạo header
+    }
+    // ---------------------------------
+
     // 4. Kiểm tra Header (Nếu chưa có thì tạo)
-    // Giúp file sheet của bạn luôn có dòng tiêu đề đẹp
-    if (sheet.rowCount === 0 || !sheet.headerValues || sheet.headerValues.length === 0) {
+    // Lúc này sheet.headerValues đã an toàn để truy cập
+    if (!sheet.headerValues || sheet.headerValues.length === 0) {
         await sheet.setHeaderRow([
             'Thời gian', 'Nền tảng', 'Sản phẩm', 'Khách hàng', 'Hook', 'Nội dung', 'CTA', 'Hashtags'
         ]);
@@ -46,6 +56,7 @@ const saveToGoogleSheet = async (data) => {
 
   } catch (error) {
     console.error("❌ Lỗi lưu Google Sheet:", error);
+    // Không throw error để tránh làm crash server, chỉ log ra để sửa
   }
 };
 
