@@ -1,4 +1,3 @@
-// server/server.js
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
@@ -10,6 +9,24 @@ const path = require("path"); // Thư viện xử lý đường dẫn file
 
 const app = express();
 app.use(cors());
+
+// --- MIDDLEWARE BẢO VỆ ---
+const checkPassword = (req, res, next) => {
+  // Lấy mật khẩu từ Header do Frontend gửi lên
+  const providedPassword = req.headers['x-app-password'];
+  const correctPassword = process.env.APP_PASSWORD;
+
+  // Nếu Server chưa cài pass trong .env thì cho qua (để test dễ)
+  if (!correctPassword) return next();
+
+  // So sánh mật khẩu
+  if (providedPassword === correctPassword) {
+    next(); // Đúng thì cho đi tiếp
+  } else {
+    res.status(403).json({ error: "⛔ Mật khẩu truy cập không đúng!" }); // Sai thì chặn lại
+  }
+};
+
 app.use(express.json());
 
 // Cấu hình Multer để lưu video tạm thời
@@ -18,7 +35,7 @@ const upload = multer({ dest: "uploads/" });
 const { saveToGoogleSheet } = require('./services/sheetService'); // Thêm dòng này
 
 // API Endpoint: Nhận video và thông tin từ Frontend
-app.post("/api/generate-script", upload.single("video"), async (req, res) => {
+app.post("/api/generate-script", checkPassword, upload.single("video"), async (req, res) => {
   try {
     const { productName, targetAudience, usp, tone, socialNetwork } = req.body;
     const videoPath = req.file.path;
