@@ -21,3 +21,4 @@ build/
 .sass-cache/
 *.tsbuildinfo
 .vite/
+uploads/
