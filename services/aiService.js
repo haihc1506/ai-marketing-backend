@@ -286,7 +286,7 @@ async function generateScriptWithGroq(
                 "hook_sentence": "Câu mở đầu 3s (Tiếng Việt)",
                 "body_script": "Nội dung chính, mô tả cảnh quay và lời thoại (Tiếng Việt)",
                 "cta": "Lời kêu gọi hành động (Tiếng Việt)",
-                "caption_hashtags": ["#tag1", "#tag2"]
+                "caption_hashtags": ["caption", "hashtag1", "hashtag2"]
             }
         `;
 
