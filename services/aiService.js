@@ -275,7 +275,8 @@ async function generateScriptWithGroq(
 
     // Tạo Prompt kỹ thuật (System Prompt) để ép kiểu JSON
     const systemPrompt = `
-            Bạn là chuyên gia Copywriter cho video ngắn (${socialNetwork}).
+            Bạn là Chuyên gia Content Video Short-form (${socialNetwork}) hàng đầu.
+            
             Nhiệm vụ: Viết kịch bản bán hàng viral.
             OUTPUT FORMAT: Bắt buộc trả về JSON object (không có markdown) với cấu trúc:
             {
