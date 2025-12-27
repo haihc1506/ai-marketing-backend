@@ -151,7 +151,10 @@ async function generateScript(
       // TRƯỜNG HỢP 1: CÓ VIDEO
       promptInstruction = `
         NHIỆM VỤ: Xem video đính kèm và viết kịch bản lời thoại khớp với hành động trong video.
-        YÊU CẦU QUAN TRỌNG: Kịch bản PHẢI KHỚP HOÀN TOÀN với video đã cung cấp.
+        YÊU CẦU QUAN TRỌNG:
+        - Kịch bản PHẢI KHỚP HOÀN TOÀN với video đã cung cấp.
+        - KHÔNG được sáng tạo thêm nội dung ngoài video.
+        - Độ dài kịch bản: bám sát với thời lượng video.
         `;
     } else {
       // TRƯỜNG HỢP 2: KHÔNG CÓ VIDEO (SÁNG TẠO)
@@ -183,7 +186,6 @@ async function generateScript(
       - Giọng văn: ${tone}
       - Phù hợp với đặc thù nền tảng ${socialNetwork}.
       - Tối ưu chuyển đổi, tập trung vào lợi ích sản phẩm.
-      - Độ dài kịch bản: bám sát với thời lượng video.
 
       OUTPUT FORMAT: JSON (hook_sentence, body_script, cta, caption_hashtags).
     `;
@@ -204,6 +206,7 @@ async function generateScript(
       }`
     );
 
+    console.log("Promt:", inputParts);
     // 4. Gọi Gemini (Multimodal)
     const result = await model.generateContent(inputParts);
 
