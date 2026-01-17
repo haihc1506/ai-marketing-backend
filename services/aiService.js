@@ -29,7 +29,7 @@ const jsonSchema = {
     caption_hashtags: {
       type: SchemaType.ARRAY,
       items: { type: SchemaType.STRING },
-      description: "Caption kèm theo video với các hashtag thịnh hành.",
+      description: "Độ dài tối đa của caption và hashtags là 150 ký tự. Caption nên bao gồm lời kêu gọi hành động nhẹ nhàng. Haghtags nên liên quan đến sản phẩm và xu hướng hiện tại. Haghtags mặc định luôn bao gồm #ShopeeCreator #ShopeeVideo #LuotVuiMuaLien #HangMoiVe",
     },
   },
   required: ["hook_sentence", "body_script", "cta", "caption_hashtags"],
